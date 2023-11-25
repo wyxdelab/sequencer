@@ -84,47 +84,48 @@ parser.add_argument('-c', '--config', default='', type=str, metavar='FILE',
                     help='YAML config file specifying default arguments')
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
+# 创建两个命令行解析器，config_parser用于解析配置文件的参数    parser用于解析其他与训练相关的命令行参数
 
 # Dataset parameters
-parser.add_argument('data_dir', metavar='DIR',
+parser.add_argument('data_dir', metavar='DIR',        #不需要指定名称，只需要提供目录路径即可
                     help='path to dataset')
-parser.add_argument('--dataset', '-d', metavar='NAME', default='',
+parser.add_argument('--dataset', '-d', metavar='NAME', default='',    # 数据集名称，默认空
                     help='dataset type (default: ImageFolder/ImageTar if empty)')
-parser.add_argument('--train-split', metavar='NAME', default='train',
+parser.add_argument('--train-split', metavar='NAME', default='train',    #数据集中训练集的名称，默认train
                     help='dataset train split (default: train)')
-parser.add_argument('--val-split', metavar='NAME', default='validation',
+parser.add_argument('--val-split', metavar='NAME', default='validation',     #数据集中验证集的名称，默认validation
                     help='dataset validation split (default: validation)')
-parser.add_argument('--dataset-download', action='store_true', default=False,
+parser.add_argument('--dataset-download', action='store_true', default=False,    #是否允许下载数据集，默认不允许
                     help='Allow download of dataset for torch/ and tfds/ datasets that support it.')
-parser.add_argument('--class-map', default='', type=str, metavar='FILENAME',
+parser.add_argument('--class-map', default='', type=str, metavar='FILENAME',        
                     help='path to class to idx mapping file (default: "")')
 
 # Model parameters
-parser.add_argument('--model', default='resnet50', type=str, metavar='MODEL',
+parser.add_argument('--model', default='resnet50', type=str, metavar='MODEL',    #指定训练的模型名称
                     help='Name of model to train (default: "resnet50"')
-parser.add_argument('--pretrained', action='store_true', default=False,
-                    help='Start with pretrained version of specified network (if avail)')
-parser.add_argument('--initial-checkpoint', default='', type=str, metavar='PATH',
+parser.add_argument('--pretrained', action='store_true', default=False,        #是否使用模型的预训练版本
+                    help='Start with pretrained version of specified network (if avail)')    
+parser.add_argument('--initial-checkpoint', default='', type=str, metavar='PATH',    #从指定路径的文件初始化模型
                     help='Initialize model from this checkpoint (default: none)')
-parser.add_argument('--resume', default='', type=str, metavar='PATH',
+parser.add_argument('--resume', default='', type=str, metavar='PATH',        #从指定的检查点文件中恢复完整的模型和优化器状态
                     help='Resume full model and optimizer state from checkpoint (default: none)')
 parser.add_argument('--no-resume-opt', action='store_true', default=False,
-                    help='prevent resume of optimizer state when resuming model')
-parser.add_argument('--num-classes', type=int, default=None, metavar='N',
+                    help='prevent resume of optimizer state when resuming model')    #是否恢复模型时不恢复优化器状态
+parser.add_argument('--num-classes', type=int, default=None, metavar='N',        #分类数量
                     help='number of label classes (Model default if None)')
-parser.add_argument('--gp', default=None, type=str, metavar='POOL',
+parser.add_argument('--gp', default=None, type=str, metavar='POOL',        #全局池化
                     help='Global pool type, one of (fast, avg, max, avgmax, avgmaxc). Model default if None.')
-parser.add_argument('--img-size', type=int, default=None, metavar='N',
+parser.add_argument('--img-size', type=int, default=None, metavar='N',        #图片的宽高
                     help='Image patch size (default: None => model default)')
-parser.add_argument('--input-size', default=None, nargs=3, type=int,
+parser.add_argument('--input-size', default=None, nargs=3, type=int,        #输入图片的所有维度
                     metavar='N N N', help='Input all image dimensions (d h w, e.g. --input-size 3 224 224), uses model default if empty')
-parser.add_argument('--crop-pct', default=None, type=float,
+parser.add_argument('--crop-pct', default=None, type=float,        #用于验证时的输入图像中心裁剪的百分比
                     metavar='N', help='Input image center crop percent (for validation only)')
-parser.add_argument('--mean', type=float, nargs='+', default=None, metavar='MEAN',
+parser.add_argument('--mean', type=float, nargs='+', default=None, metavar='MEAN',    #用于覆盖数据集的均值和标准差的像素值
                     help='Override mean pixel value of dataset')
 parser.add_argument('--std', type=float, nargs='+', default=None, metavar='STD',
                     help='Override std deviation of of dataset')
-parser.add_argument('--interpolation', default='', type=str, metavar='NAME',
+parser.add_argument('--interpolation', default='', type=str, metavar='NAME',    #图像调整大小插值类型
                     help='Image resize interpolation type (overrides model)')
 parser.add_argument('-b', '--batch-size', type=int, default=128, metavar='N',
                     help='input batch size for training (default: 128)')
@@ -132,59 +133,59 @@ parser.add_argument('-vb', '--validation-batch-size', type=int, default=None, me
                     help='validation batch size override (default: None)')
 
 # Optimizer parameters
-parser.add_argument('--opt', default='sgd', type=str, metavar='OPTIMIZER',
+parser.add_argument('--opt', default='sgd', type=str, metavar='OPTIMIZER',    #优化器类型，默认sgd
                     help='Optimizer (default: "sgd"')
-parser.add_argument('--opt-eps', default=None, type=float, metavar='EPSILON',
+parser.add_argument('--opt-eps', default=None, type=float, metavar='EPSILON',    #优化器的 epsilon 参数，用于数值稳定性
                     help='Optimizer Epsilon (default: None, use opt default)')
-parser.add_argument('--opt-betas', default=None, type=float, nargs='+', metavar='BETA',
+parser.add_argument('--opt-betas', default=None, type=float, nargs='+', metavar='BETA',    #优化器的 beta 参数，可以接受多个值
                     help='Optimizer Betas (default: None, use opt default)')
-parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
+parser.add_argument('--momentum', type=float, default=0.9, metavar='M',    #优化器的动量参数，默认为 0.9
                     help='Optimizer momentum (default: 0.9)')
-parser.add_argument('--weight-decay', type=float, default=2e-5,
+parser.add_argument('--weight-decay', type=float, default=2e-5,    #权重衰减（L2正则化）的参数，默认为 2e-5
                     help='weight decay (default: 2e-5)')
-parser.add_argument('--clip-grad', type=float, default=None, metavar='NORM',
+parser.add_argument('--clip-grad', type=float, default=None, metavar='NORM',    #用于梯度裁剪的阈值。如果设置为 None，则不进行梯度裁剪
                     help='Clip gradient norm (default: None, no clipping)')
-parser.add_argument('--clip-mode', type=str, default='norm',
+parser.add_argument('--clip-mode', type=str, default='norm',    #梯度裁剪的模式，可以是 ("norm", "value", "agc") 中的一个
                     help='Gradient clipping mode. One of ("norm", "value", "agc")')
 
 # Learning rate schedule parameters
-parser.add_argument('--sched', default='cosine', type=str, metavar='SCHEDULER',
+parser.add_argument('--sched', default='cosine', type=str, metavar='SCHEDULER',    #学习率调度器的类型，默认为 'cosine'。可以是 'step'、'cosine' 或其他支持的学习率调度器类型
                     help='LR scheduler (default: "step"')
-parser.add_argument('--lr', type=float, default=0.05, metavar='LR',
+parser.add_argument('--lr', type=float, default=0.05, metavar='LR',    #初始学习率，默认为 0.05
                     help='learning rate (default: 0.05)')
-parser.add_argument('--lr-noise', type=float, nargs='+', default=None, metavar='pct, pct',
+parser.add_argument('--lr-noise', type=float, nargs='+', default=None, metavar='pct, pct',    #学习率噪声的开/关百分比。可以提供一个或两个百分比值
                     help='learning rate noise on/off epoch percentages')
-parser.add_argument('--lr-noise-pct', type=float, default=0.67, metavar='PERCENT',
+parser.add_argument('--lr-noise-pct', type=float, default=0.67, metavar='PERCENT',    #表示在学习率噪声开启的情况下，学习率可以偏离其当前值的最大百分比。
                     help='learning rate noise limit percent (default: 0.67)')
-parser.add_argument('--lr-noise-std', type=float, default=1.0, metavar='STDDEV',
+parser.add_argument('--lr-noise-std', type=float, default=1.0, metavar='STDDEV',    #学习率噪声的标准差，默认为 1.0
                     help='learning rate noise std-dev (default: 1.0)')
-parser.add_argument('--lr-cycle-mul', type=float, default=1.0, metavar='MULT',
+parser.add_argument('--lr-cycle-mul', type=float, default=1.0, metavar='MULT',    #学习率周期长度的乘数，默认为 1.0，相当于调度器函数周期，2的话就是学习周期是函数周期的2倍
                     help='learning rate cycle len multiplier (default: 1.0)')
-parser.add_argument('--lr-cycle-decay', type=float, default=0.5, metavar='MULT',
+parser.add_argument('--lr-cycle-decay', type=float, default=0.5, metavar='MULT',    #每个学习率调度器周期的衰减量，默认为 0.5，即当一个学习率调度器的周期结束后，进入下一个周期的衰减到的比例
                     help='amount to decay each learning rate cycle (default: 0.5)')
 parser.add_argument('--lr-cycle-limit', type=int, default=1, metavar='N',
-                    help='learning rate cycle limit, cycles enabled if > 1')
+                    help='learning rate cycle limit, cycles enabled if > 1')    #学习率周期的限制次数，如果大于 1，则启用学习率周期，即当1时，整个训练过程只有一个学习率周期，大于1，就有多个学习率周期
 parser.add_argument('--lr-k-decay', type=float, default=1.0,
-                    help='learning rate k-decay for cosine/poly (default: 1.0)')
-parser.add_argument('--warmup-lr', type=float, default=0.0001, metavar='LR',
+                    help='learning rate k-decay for cosine/poly (default: 1.0)')    #每一个学习率周期的衰减量，默认为1，即不衰减，当一个学习率周期结束后，进入下一个周期的衰减到的比例
+parser.add_argument('--warmup-lr', type=float, default=0.0001, metavar='LR',    #预热学习率，默认为 0.0001，在前几个epoch使用
                     help='warmup learning rate (default: 0.0001)')
-parser.add_argument('--min-lr', type=float, default=1e-6, metavar='LR',
+parser.add_argument('--min-lr', type=float, default=1e-6, metavar='LR',        #循环调度器到达 0 时的学习率下限，默认为 1e-6
                     help='lower lr bound for cyclic schedulers that hit 0 (1e-5)')
-parser.add_argument('--epochs', type=int, default=300, metavar='N',
-                    help='number of epochs to train (default: 300)')
-parser.add_argument('--epoch-repeats', type=float, default=0., metavar='N',
+parser.add_argument('--epochs', type=int, default=300, metavar='N',    #训练周期
+                    help='number of epochs to train (default: 300)')    
+parser.add_argument('--epoch-repeats', type=float, default=0., metavar='N',    
                     help='epoch repeat multiplier (number of times to repeat dataset epoch per train epoch).')
-parser.add_argument('--start-epoch', default=None, type=int, metavar='N',
+parser.add_argument('--start-epoch', default=None, type=int, metavar='N',    #用于在重新启动训练时指定轮数
                     help='manual epoch number (useful on restarts)')
-parser.add_argument('--decay-epochs', type=float, default=100, metavar='N',
+parser.add_argument('--decay-epochs', type=float, default=100, metavar='N',    #每隔多少个 epoch 减小一次学习率，默认为 100
                     help='epoch interval to decay LR')
-parser.add_argument('--warmup-epochs', type=int, default=3, metavar='N',
+parser.add_argument('--warmup-epochs', type=int, default=3, metavar='N',    #预热学习率的轮数
                     help='epochs to warmup LR, if scheduler supports')
-parser.add_argument('--cooldown-epochs', type=int, default=10, metavar='N',
+parser.add_argument('--cooldown-epochs', type=int, default=10, metavar='N',    #在循环调度器结束后，学习率降至 min-lr 之前的冷却轮数
                     help='epochs to cooldown LR at min_lr, after cyclic schedule ends')
 parser.add_argument('--patience-epochs', type=int, default=10, metavar='N',
-                    help='patience epochs for Plateau LR scheduler (default: 10')
-parser.add_argument('--decay-rate', '--dr', type=float, default=0.1, metavar='RATE',
+                    help='patience epochs for Plateau LR scheduler (default: 10')    #Plateau LR 调度器的耐心轮数，默认为 10，当调度器追踪的模型指标没有变化时，会等待--patience-epochs，之后减小学习率
+parser.add_argument('--decay-rate', '--dr', type=float, default=0.1, metavar='RATE',    #减小到的学习率的比例
                     help='LR decay rate (default: 0.1)')
 
 # Augmentation & regularization parameters
@@ -260,66 +261,66 @@ parser.add_argument('--split-bn', action='store_true',
                     help='Enable separate BN layers per augmentation split.')
 
 # Model Exponential Moving Average
-parser.add_argument('--model-ema', action='store_true', default=False,
+parser.add_argument('--model-ema', action='store_true', default=False,    # 启用对模型权重指数移动平均的跟踪
                     help='Enable tracking moving average of model weights')
-parser.add_argument('--model-ema-force-cpu', action='store_true', default=False,
+parser.add_argument('--model-ema-force-cpu', action='store_true', default=False,    #强制在 CPU 上跟踪 EMA
                     help='Force ema to be tracked on CPU, rank=0 node only. Disables EMA validation.')
-parser.add_argument('--model-ema-decay', type=float, default=0.9998,
+parser.add_argument('--model-ema-decay', type=float, default=0.9998,        #用于模型权重指数移动平均的衰减因子，默认为 0.9998
                     help='decay factor for model weights moving average (default: 0.9998)')
 
 # Misc
-parser.add_argument('--seed', type=int, default=42, metavar='S',
+parser.add_argument('--seed', type=int, default=42, metavar='S',    #随机种子，用于确保可重复性
                     help='random seed (default: 42)')
-parser.add_argument('--worker-seeding', type=str, default='all',
+parser.add_argument('--worker-seeding', type=str, default='all',    #worker 种子模式，默认为 'all' ，针对多线程
                     help='worker seed mode (default: all)')
-parser.add_argument('--log-interval', type=int, default=50, metavar='N',
+parser.add_argument('--log-interval', type=int, default=50, metavar='N',    #间隔多少个epoch记录训练状态
                     help='how many batches to wait before logging training status')
-parser.add_argument('--recovery-interval', type=int, default=0, metavar='N',
+parser.add_argument('--recovery-interval', type=int, default=0, metavar='N',    #间隔多少个epoch保存一个恢复检查点
                     help='how many batches to wait before writing recovery checkpoint')
 parser.add_argument('--checkpoint-hist', type=int, default=10, metavar='N',
-                    help='number of checkpoints to keep (default: 10)')
+                    help='number of checkpoints to keep (default: 10)')    #保留的恢复检查点数量
 parser.add_argument('-j', '--workers', type=int, default=4, metavar='N',
-                    help='how many training processes to use (default: 4)')
+                    help='how many training processes to use (default: 4)')    #进程数
 parser.add_argument('--save-images', action='store_true', default=False,
-                    help='save images of input bathes every log interval for debugging')
+                    help='save images of input bathes every log interval for debugging')    #每一次记录训练状态时保存图片
 parser.add_argument('--amp', action='store_true', default=False,
                     help='use NVIDIA Apex AMP or Native AMP for mixed precision training')
-parser.add_argument('--apex-amp', action='store_true', default=False,
+parser.add_argument('--apex-amp', action='store_true', default=False,    #--amp: 使用 NVIDIA Apex AMP 或 Native AMP 进行混合精度训练。
                     help='Use NVIDIA Apex AMP mixed precision')
-parser.add_argument('--native-amp', action='store_true', default=False,
+parser.add_argument('--native-amp', action='store_true', default=False,    
                     help='Use Native Torch AMP mixed precision')
-parser.add_argument('--no-ddp-bb', action='store_true', default=False,
+parser.add_argument('--no-ddp-bb', action='store_true', default=False,        #DDP 是 PyTorch 中用于分布式训练的模块，允许在多个 GPU 或多个机器上并行地训练模型。在分布式训练中，模型的参数和梯度需要在不同的设备之间进行传递和同步。这里是是否禁用DDP模块
                     help='Force broadcast buffers for native DDP to off.')
-parser.add_argument('--channels-last', action='store_true', default=False,
+parser.add_argument('--channels-last', action='store_true', default=False,    #是否将通道设置为tensor的最后一维
                     help='Use channels_last memory layout')
-parser.add_argument('--pin-mem', action='store_true', default=False,
+parser.add_argument('--pin-mem', action='store_true', default=False,    #是否启用cpu内存锁定，启用内存锁定可以减少数据从主机（CPU）到设备（GPU）的传输时间。
                     help='Pin CPU memory in DataLoader for more efficient (sometimes) transfer to GPU.')
-parser.add_argument('--no-prefetcher', action='store_true', default=False,
+parser.add_argument('--no-prefetcher', action='store_true', default=False,    #是否禁用预取器。预取器是一种用于在训练期间异步加载数据的机制，以便在 GPU 处理当前批次数据的同时，CPU 可以预取下一批数据，从而减少训练过程中的数据加载等待时间。
                     help='disable fast prefetcher')
-parser.add_argument('--output', default='', type=str, metavar='PATH',
+parser.add_argument('--output', default='', type=str, metavar='PATH',    #输出文件夹的路径，默认为当前目录
                     help='path to output folder (default: none, current dir)')
-parser.add_argument('--experiment', default='', type=str, metavar='NAME',
+parser.add_argument('--experiment', default='', type=str, metavar='NAME',    #训练实验的名称，也是输出的子文件夹的名称
                     help='name of train experiment, name of sub-folder for output')
-parser.add_argument('--eval-metric', default='top1', type=str, metavar='EVAL_METRIC',
+parser.add_argument('--eval-metric', default='top1', type=str, metavar='EVAL_METRIC',    #最佳指标，默认为 "top1"。
                     help='Best metric (default: "top1"')
-parser.add_argument('--tta', type=int, default=0, metavar='N',
+parser.add_argument('--tta', type=int, default=0, metavar='N',    #表示测试/推断时要应用的数据增强版本的数量，默认不进行数据增强
                     help='Test/inference time augmentation (oversampling) factor. 0=None (default: 0)')
 parser.add_argument("--local_rank", default=0, type=int)
-parser.add_argument('--use-multi-epochs-loader', action='store_true', default=False,
+parser.add_argument('--use-multi-epochs-loader', action='store_true', default=False,    #--use-multi-epochs-loader 更侧重于一次性加载多个 epochs 的数据
                     help='use the multi-epochs-loader to save time at the beginning of every epoch')
-parser.add_argument('--torchscript', dest='torchscript', action='store_true',
+parser.add_argument('--torchscript', dest='torchscript', action='store_true',    #用于将模型转换为 TorchScript 格式的选项。TorchScript 是 PyTorch 的一种中间表示形式，它允许将 PyTorch 模型序列化为一种可移植的格式，从而使得模型可以在没有 Python 环境的情况下运行。
                     help='convert model torchscript for inference')
-parser.add_argument('--fuser', default='', type=str,
+parser.add_argument('--fuser', default='', type=str,    #参数用于选择 PyTorch JIT 编译器的融合器（fuser）。PyTorch JIT 编译器负责将 PyTorch 脚本编译为图形计算。融合器是一种优化工具，它负责将多个操作融合（合并）为一个操作，以提高计算效率。
                     help="Select jit fuser. One of ('', 'te', 'old', 'nvfuser')")
-parser.add_argument('--log-wandb', action='store_true', default=False,
+parser.add_argument('--log-wandb', action='store_true', default=False,    #记录训练和验证指标到 W&B。
                     help='log training and validation metrics to wandb')
-parser.add_argument('--log-clearml', action='store_true', default=False,
+parser.add_argument('--log-clearml', action='store_true', default=False,    #记录训练、验证指标和权重到 ClearML。
                     help='log training, validation metrics, and weights to clearml')
-parser.add_argument('--task-name', default='', type=str, metavar='NAME',
+parser.add_argument('--task-name', default='', type=str, metavar='NAME',    #训练任务的名称
                     help='name of train task')
-parser.add_argument('--output-uri', default='', type=str, metavar='NAME',
+parser.add_argument('--output-uri', default='', type=str, metavar='NAME',    #用于指定保存模型权重的 URI（Uniform Resource Identifier）。URI 是用于标识和定位资源的字符串。在这个上下文中，它用于指定一个位置，用于存储模型训练过程中的权重。
                     help='uri to save weights of model')
-parser.add_argument('--log-s3', action='store_true', default=False,
+parser.add_argument('--log-s3', action='store_true', default=False,    #将权重记录到 S3
                     help='weights to s3')
 
 
