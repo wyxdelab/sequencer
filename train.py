@@ -326,15 +326,15 @@ parser.add_argument('--log-s3', action='store_true', default=False,    #将权�
 
 def _parse_args():
     # Do we have a config file to parse?
-    args_config, remaining = config_parser.parse_known_args()
+    args_config, remaining = config_parser.parse_known_args()    
     if args_config.config:
         with open(args_config.config, 'r') as f:
             cfg = yaml.safe_load(f)
-            parser.set_defaults(**cfg)
+            parser.set_defaults(**cfg)    #用配置文件中的值更新解析器的默认值
 
     # The main arg parser parses the rest of the args, the usual
     # defaults will have been overridden if config file specified.
-    args = parser.parse_args(remaining)
+    args = parser.parse_args(remaining)    #使用修改后的解析器解析剩余的命令行参数
 
     # Cache the args as a text string to save them in the output dir later
     args_text = yaml.safe_dump(args.__dict__, default_flow_style=False)
