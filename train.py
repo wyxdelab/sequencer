@@ -424,13 +424,13 @@ def main():
 
     data_config = resolve_data_config(vars(args), model=model, verbose=args.local_rank == 0)
 
-    # setup augmentation batch splits for contrastive loss or split bn
+    # setup augmentation batch splits for contrastive loss or split bn    增强批次分割
     num_aug_splits = 0
     if args.aug_splits > 0:
         assert args.aug_splits > 1, 'A split of 1 makes no sense'
         num_aug_splits = args.aug_splits
 
-    # enable split bn (separate bn stats per batch-portion)
+    # enable split bn (separate bn stats per batch-portion) 分割批量归一化
     if args.split_bn:
         assert num_aug_splits > 1 or args.resplit
         model = convert_splitbn_model(model, max(num_aug_splits, 2))
